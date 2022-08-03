@@ -65,3 +65,13 @@
  *
  * Will add a new dropdown in your toolbar with options light and dark.
  **/
+
+export const parameters = {
+  actions: { argTypesRegex: "^on[A-Z].*" },
+  controls: {
+    matchers: {
+      color: /(background|color)$/i,
+      date: /Date$/,
+    },
+  },
+};
