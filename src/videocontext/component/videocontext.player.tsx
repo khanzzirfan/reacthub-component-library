@@ -1,6 +1,6 @@
 import React from "react";
 import VideoContext, { SourceNode } from "videocontext";
-import { PlayerProps, SourceVideo } from "./videocontext.type";
+import { Effect, PlayerProps, SourceVideo } from "./videocontext.type";
 
 export const VideocontextPlayer = ({
   size,
@@ -9,11 +9,14 @@ export const VideocontextPlayer = ({
   ondestroy,
   onseek,
   onplay,
+  onstop,
+  onpause,
   ondurationchange,
   onended,
   onerror,
   onPlaying,
   onrender,
+  ontimeupdate,
   autoPlay,
   sources,
   canvasId,
@@ -21,7 +24,20 @@ export const VideocontextPlayer = ({
 }: PlayerProps) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const ctx = React.useRef<VideoContext>(null);
+  const requestAnimRef = React.useRef(null);
   // const videoNode:
+
+  /** setup animation frame to update any events to callback */
+  const animate = (time) => {
+    // Change the state according to the animation
+    videoCurrentTimeUpdate();
+    requestAnimRef.current = requestAnimationFrame(animate);
+  };
+
+  React.useEffect(() => {
+    requestAnimRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestAnimRef.current);
+  }, []);
 
   React.useEffect(() => {
     if (!canvasRef.current) return;
@@ -58,7 +74,9 @@ export const VideocontextPlayer = ({
   }, [autoPlay]);
 
   const videoStateLoad = (): void => {
-    if (onload) onload();
+    if (onload) {
+      onload();
+    }
   };
 
   const videoStateLoaded = (): void => {
@@ -77,12 +95,36 @@ export const VideocontextPlayer = ({
     if (onplay) onplay();
   };
 
+  const videoPause = (): void => {
+    if (ctx.current) {
+      ctx.current.pause();
+    }
+  };
+
+  const videoStop = (): void => {
+    if (ctx.current) {
+      ctx.current.pause();
+      ctx.current.currentTime = 0;
+    }
+  };
+
   const videoDurationChange = (node: SourceNode, duration: number): void => {
     if (ondurationchange) ondurationchange(duration);
   };
 
+  const videoCurrentTimeUpdate = (): void => {
+    if (ctx.current) {
+      if (ontimeupdate) {
+        ontimeupdate(ctx.current.currentTime);
+      }
+    }
+  };
+
   const videoEnded = () => {
-    if (onended) onended();
+    if (onended) {
+      console.log("videoOnEnded event");
+      onended();
+    }
   };
 
   const videoError = () => {
@@ -111,7 +153,12 @@ export const VideocontextPlayer = ({
       connectVideoNodeToDestination(sources);
     } else {
       sources.forEach((source: SourceVideo) => {
-        connectVideoNodeToDestination(source.src, source.start, source.end);
+        connectVideoNodeToDestination(
+          source.src,
+          source.start,
+          source.end,
+          source.effect,
+        );
       });
     }
     if (autoPlay) {
@@ -123,11 +170,13 @@ export const VideocontextPlayer = ({
     url: string,
     start: number = 0,
     end: number = Infinity,
+    effect: Effect = Effect.NONE,
   ): void => {
     const videoNode = ctx.current.video(url, 0);
     videoNode.crossOrigin = "anonymous";
     videoNode.start(start);
     videoNode.stop(end);
+
     videoNode.registerCallback("load", videoStateLoad);
     videoNode.registerCallback("loaded", videoStateLoaded);
     videoNode.registerCallback("durationchange", videoDurationChange);
@@ -137,7 +186,21 @@ export const VideocontextPlayer = ({
     videoNode.registerCallback("destory", videodestroy);
     videoNode.registerCallback("ended", videoEnded);
     videoNode.registerCallback("error", videoError);
-    videoNode.connect(ctx.current.destination);
+    videoNode.registerCallback("content", videoCurrentTimeUpdate);
+
+    if (effect && effect !== Effect.NONE) {
+      console.log("register monochrome effects effects");
+      const filterNode = ctx.current.effect(VideoContext.DEFINITIONS[effect]);
+      //Give a sepia tint to the monochrome output (note how shader description properties are automatically bound to the JavaScript object).
+      // vcEffect.outputMix = [1.25, 1.18, 0.9];
+      videoNode.connect(filterNode);
+      // console.log("effects definition");
+      // console.log(VideoContext.DEFINITIONS);
+      // console.log(ctx.current.DEFINITIONS);
+      filterNode.connect(ctx.current.destination);
+    } else {
+      videoNode.connect(ctx.current.destination);
+    }
   };
 
   const videocontextEnded = (): void => {};

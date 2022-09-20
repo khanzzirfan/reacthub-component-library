@@ -1,8 +1,20 @@
+const glob = require("glob");
 const path = require("path");
+const appDirectory = path.resolve(__dirname, "../src");
+const getStories = () =>
+  glob.sync(`${appDirectory}/**/stories/**/*.stories.@(js|jsx|ts|tsx|mdx)`, {
+    ignore: `${appDirectory}/**/stories/**/*.native.stories.@(js|jsx|ts|tsx|mdx)`,
+  });
 
+// stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
   staticDirs: ["../public"],
+  refs: {
+    "@chakra-ui/react": {
+      disable: true,
+    },
+  },
   // Add any Storybook addons you want here: https://storybook.js.org/addons/
   addons: ["@storybook/addon-links", "@storybook/addon-essentials"],
   webpackFinal: async (config) => {
