@@ -9,8 +9,6 @@ export const VideocontextPlayer = ({
   ondestroy,
   onseek,
   onplay,
-  onstop,
-  onpause,
   ondurationchange,
   onended,
   onerror,
@@ -156,11 +154,13 @@ export const VideocontextPlayer = ({
         connectVideoNodeToDestination(
           source.src,
           source.start,
+          source.sourceStart,
           source.end,
           source.effect,
         );
       });
     }
+
     if (autoPlay) {
       ctx.current.play();
     }
@@ -169,10 +169,11 @@ export const VideocontextPlayer = ({
   const connectVideoNodeToDestination = (
     url: string,
     start: number = 0,
+    sourceStart: number = 0,
     end: number = Infinity,
     effect: Effect = Effect.NONE,
   ): void => {
-    const videoNode = ctx.current.video(url, 0);
+    const videoNode = ctx.current.video(url, sourceStart);
     videoNode.crossOrigin = "anonymous";
     videoNode.start(start);
     videoNode.stop(end);

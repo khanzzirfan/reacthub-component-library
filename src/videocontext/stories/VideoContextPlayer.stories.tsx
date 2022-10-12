@@ -1,7 +1,7 @@
 import React from "react";
 import { Effect, SourceVideo } from "../component";
 
-import { PlayerProps } from "../component";
+import { PlayerProps, SourceType } from "../component";
 import { VideoContextPlayerDemo } from "./VideoContextPlayerDemo";
 
 export default {
@@ -14,8 +14,15 @@ const Template = (args) => <VideoContextPlayerDemo {...args} />;
 export const Primary = Template.bind({});
 Primary.args = {
   // sources: "http://media.w3.org/2010/05/sintel/trailer.mp4",
-  sources:
-    "https://player.vimeo.com/external/291648067.hd.mp4?s=94998971682c6a3267e4cbd19d16a7b6c720f345&profile_id=175&oauth2_token_id=57447761",
+  sources: [
+    {
+      src: "https://player.vimeo.com/external/291648067.hd.mp4?s=94998971682c6a3267e4cbd19d16a7b6c720f345&profile_id=175&oauth2_token_id=57447761",
+      start: 0,
+      end: 200,
+      effect: Effect.NONE,
+      type: SourceType.VIDEO,
+    },
+  ],
   autoPlay: false,
   size: { width: 500, height: 500 },
 } as PlayerProps;
@@ -23,8 +30,15 @@ Primary.args = {
 export const Trailer = Template.bind({});
 Trailer.args = {
   // sources: "http://media.w3.org/2010/05/sintel/trailer.mp4",
-  sources:
-    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+  sources: [
+    {
+      src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+      start: 0,
+      end: 200,
+      effect: Effect.NONE,
+      type: SourceType.VIDEO,
+    },
+  ],
   autoPlay: false,
   play: false,
   size: { width: 500, height: 500 },
@@ -39,6 +53,7 @@ Grayscale.args = {
       start: 0,
       end: 200,
       effect: Effect.MONOCHROME,
+      type: SourceType.VIDEO,
     },
   ],
   autoPlay: false,
@@ -55,12 +70,14 @@ Transitions.args = {
       start: 0,
       end: 10,
       effect: Effect.MONOCHROME,
+      type: SourceType.VIDEO,
     },
     {
       src: "https://eyecastvideoeditormediafiles194906-dev.s3.ap-southeast-2.amazonaws.com/public/irfan%40trolio.com/6296919af24306de544bd710/videos/big_buck_bunny_720p_1mb.mp4",
       start: 10,
       end: 20,
-      effect: Effect.MONOCHROME,
+      effect: Effect.NONE,
+      type: SourceType.VIDEO,
     },
   ],
   autoPlay: false,

@@ -1,7 +1,13 @@
-type CanvasSize = {
+export type CanvasSize = {
   width: number;
   height: number;
 };
+
+export enum SourceType {
+  VIDEO = "video",
+  AUDIO = "audio",
+  IMAGE = "image",
+}
 
 export enum Effect {
   NONE = "NONE",
@@ -20,14 +26,15 @@ export enum Effect {
 export type SourceVideo = {
   src: string;
   start: number;
+  sourceStart?: number;
   end: number;
   effect: Effect;
+  type: SourceType;
 };
 
 export interface PlayerProps {
-  sources: SourceVideo[] | string;
+  sources: SourceVideo[];
   size: CanvasSize;
-
   onload?: () => void;
   onloaded?: () => void;
   ondestroy?: () => void;
