@@ -18,7 +18,7 @@ Primary.args = {
     {
       src: "https://player.vimeo.com/external/291648067.hd.mp4?s=94998971682c6a3267e4cbd19d16a7b6c720f345&profile_id=175&oauth2_token_id=57447761",
       start: 0,
-      end: 200,
+      duration: 5,
       effect: Effect.NONE,
       type: SourceType.VIDEO,
     },
@@ -34,7 +34,7 @@ Trailer.args = {
     {
       src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
       start: 0,
-      end: 200,
+      duration: 5,
       effect: Effect.NONE,
       type: SourceType.VIDEO,
     },
@@ -51,7 +51,8 @@ Grayscale.args = {
     {
       src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
       start: 0,
-      end: 200,
+      sourceStart: 0,
+      duration: 5,
       effect: Effect.MONOCHROME,
       type: SourceType.VIDEO,
     },
@@ -68,14 +69,15 @@ Transitions.args = {
     {
       src: "https://pmdvod.nationalgeographic.com/NG_Video/596/311/1370718787631_1542234923394_1370715715931_mp4_video_1024x576_1632000_primary_audio_eng_3.mp4",
       start: 0,
-      end: 10,
+      duration: 10,
       effect: Effect.MONOCHROME,
       type: SourceType.VIDEO,
     },
     {
       src: "https://eyecastvideoeditormediafiles194906-dev.s3.ap-southeast-2.amazonaws.com/public/irfan%40trolio.com/6296919af24306de544bd710/videos/big_buck_bunny_720p_1mb.mp4",
       start: 10,
-      end: 20,
+      sourceStart: 0,
+      duration: 5,
       effect: Effect.NONE,
       type: SourceType.VIDEO,
     },

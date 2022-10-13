@@ -27,7 +27,7 @@ export type SourceVideo = {
   src: string;
   start: number;
   sourceStart?: number;
-  end: number;
+  duration: number;
   effect: Effect;
   type: SourceType;
 };
